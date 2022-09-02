@@ -28,7 +28,7 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 
 	@Override
-	public Cliente cadatrar(Cliente cliente) {
+	public Cliente cadastrar(Cliente cliente) {
 		System.out.println("Cadastrando cliente");
 		return this.clienterepository.save(cliente);
 	}
@@ -40,9 +40,9 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
-	public void remover(Cliente id) {
+	public void remover(String id) {
 		System.out.println("Removendo cadastro");
-		this.clienterepository.delete(id);
+		this.clienterepository.deleteById(id);
 	}
 
 }

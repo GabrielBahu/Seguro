@@ -10,11 +10,11 @@ public interface ClienteService {
     
     Cliente listarPorId(String id);
     
-    Cliente cadatrar(Cliente cliente);
+    Cliente cadastrar(Cliente cliente);
     
     Cliente atualizar(Cliente cliente);
     
-	void remover(Cliente id);
+	void remover(String id);
    
     
 }

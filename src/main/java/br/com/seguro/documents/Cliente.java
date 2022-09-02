@@ -1,5 +1,8 @@
 package br.com.seguro.documents;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,6 +32,7 @@ public class Cliente {
 	}
 
 
+	@NotEmpty(message = "Nome não pode ser vazio")
 	public String getNome() {
 		return nome;
 	}
@@ -39,6 +43,8 @@ public class Cliente {
 	}
 
 
+	@NotEmpty(message = "CPF não pode ser vazio")
+	@CPF(message = "CPF inválido")
 	public String getCpf() {
 		return cpf;
 	}
