@@ -2,9 +2,11 @@ package br.com.seguro.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,44 +19,66 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.seguro.documents.Cliente;
+import br.com.seguro.repository.ClienteRepository;
 import br.com.seguro.responses.Response;
-import br.com.seguro.service.ClienteService;
 
 @RestController
 @RequestMapping(path = "/seguro/clientes")
 public class ClienteController {
 
-	private ClienteService clienteService;
+	private ClienteRepository clienteService;
+	
+	Cliente clt = new Cliente();
 	
 	@GetMapping
-	public ResponseEntity<List<Cliente>> listarTodos(){
-		return ResponseEntity.ok(this.clienteService.listarClientes());
+	public ResponseEntity<List<Cliente>> listarClientes(){
+		try {
+			List<Cliente> clt2 = new ArrayList<Cliente>();
+			
+			clienteService.findAll().forEach(clt2::add);
+			
+			if(clt2.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			
+			return new ResponseEntity<>(clt2, HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
-	@GetMapping(path = "/{id}")
-	public ResponseEntity<Cliente> ListarPorId(@PathVariable(name = "id") String id){
-		return ResponseEntity.ok(this.clienteService.listarPorId(id));
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Cliente> ListarPorId(@PathVariable("id") String id){
+		Optional<Cliente> cliente = clienteService.findById(id);
+		
+		if (cliente.isPresent()) {
+			return new ResponseEntity<>(cliente.get(), HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 	
-	@PostMapping
-	public ResponseEntity<Response<Cliente>> cadastrar(@Valid @RequestBody Cliente cliente, BindingResult result) {
+	@PostMapping("/novo")
+	public ResponseEntity<Cliente> cadastrar(@RequestBody Cliente request){
+		return ResponseEntity.ok(clienteService.save(request));
+	}
+	
+	@PutMapping(path = "/{id}")
+	public ResponseEntity<Response<Cliente>> atualizar(@PathVariable(name = "id") String id,@Valid @RequestBody Cliente cliente, BindingResult result) {
 		if (result.hasErrors()) {
 			List<String> erros = new ArrayList<String>();
 			result.getAllErrors().forEach(erro -> erros.add(erro.getDefaultMessage()));
 			return ResponseEntity.badRequest().body(new Response<Cliente>(erros));
-		}
-		return ResponseEntity.ok(new Response<Cliente>(this.clienteService.cadastrar(cliente)));
-	}
-	
-	@PutMapping(path = "/{id}")
-	public ResponseEntity<Cliente> atualizar(@PathVariable(name = "id") String id,@RequestBody Cliente cliente) {
+		}		
 		cliente.setId(id);
-		return ResponseEntity.ok(this.clienteService.atualizar(cliente));
+		return ResponseEntity.ok(new Response<Cliente>(this.clienteService.save(cliente)));
 	}
 	
 	@DeleteMapping(path = "/{id}")
-	public ResponseEntity<Integer> remover(@PathVariable(name = "id") String id) {	
-		this.clienteService.remover(id);
-		return ResponseEntity.ok(1);
+	public ResponseEntity<Response<Integer>> remover(@PathVariable(name = "id") String id) {	
+		this.clienteService.deleteById(id);
+		return ResponseEntity.ok(new Response<Integer>(1));
 	}
 }

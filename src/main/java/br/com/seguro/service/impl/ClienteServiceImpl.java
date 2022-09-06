@@ -15,6 +15,7 @@ public class ClienteServiceImpl implements ClienteService {
 	@Autowired
 	private ClienteRepository clienterepository;
 	
+	
 	@Override
 	public List<Cliente> listarClientes() {
 		System.out.println("Listando todos os clientes");
@@ -45,4 +46,11 @@ public class ClienteServiceImpl implements ClienteService {
 		this.clienterepository.deleteById(id);
 	}
 
-}
+	public Cliente findByCPF(ClienteService cpf2) {
+		Cliente CPF = findByCPF(cpf2);
+		if(CPF != null) {
+			return CPF;
+			}
+		return null;
+		}
+	}
