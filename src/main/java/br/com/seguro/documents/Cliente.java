@@ -7,16 +7,24 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document
+@Document(collection = "new-client")
 public class Cliente {
 
 	@Id
     private String id;
     private String nome;
-    @CPF
-    private String cpf;
+    private String cidade;
     private String uf;
-       
+    public String getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(String cidade) {
+		this.cidade = cidade;
+	}
+
+	@CPF
+    private String cpf;
 
     public Cliente(){
     	

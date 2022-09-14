@@ -8,6 +8,7 @@ class SeguroVeicularApplicationTests {
 
 	@Test
 	void contextLoads() {
+		
 	}
 
 }

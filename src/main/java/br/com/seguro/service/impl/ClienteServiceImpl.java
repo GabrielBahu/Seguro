@@ -45,12 +45,4 @@ public class ClienteServiceImpl implements ClienteService {
 		System.out.println("Removendo cadastro");
 		this.clienterepository.deleteById(id);
 	}
-
-	public Cliente findByCPF(ClienteService cpf2) {
-		Cliente CPF = findByCPF(cpf2);
-		if(CPF != null) {
-			return CPF;
-			}
-		return null;
-		}
 	}

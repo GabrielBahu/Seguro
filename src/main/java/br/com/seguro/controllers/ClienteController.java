@@ -1,14 +1,11 @@
 package br.com.seguro.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,65 +17,59 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.seguro.documents.Cliente;
 import br.com.seguro.repository.ClienteRepository;
-import br.com.seguro.responses.Response;
+import br.com.seguro.utils.Utils;
 
 @RestController
-@RequestMapping(path = "/seguro/clientes")
+@RequestMapping(value="/seguro")
 public class ClienteController {
 
-	private ClienteRepository clienteService;
+	ClienteRepository clienteService;
 	
-	Cliente clt = new Cliente();
-	
-	@GetMapping
+	@GetMapping ("/clientes")
 	public ResponseEntity<List<Cliente>> listarClientes(){
-		try {
-			List<Cliente> clt2 = new ArrayList<Cliente>();
-			
-			clienteService.findAll().forEach(clt2::add);
-			
-			if(clt2.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			
-			return new ResponseEntity<>(clt2, HttpStatus.OK);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return new ResponseEntity<>(clienteService.findAll(), HttpStatus.OK);
 	}
 	
+	@GetMapping("/clientes/{id}")
+	public Cliente listarPorId(@PathVariable(value="id") String id){
+		return clienteService.findById(id).orElse(null);
+	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<Cliente> ListarPorId(@PathVariable("id") String id){
-		Optional<Cliente> cliente = clienteService.findById(id);
+	@PostMapping("/cadastrar")
+	public ResponseEntity<?> cadastrar(@Valid @RequestBody Cliente cliente) {
 		
-		if (cliente.isPresent()) {
-			return new ResponseEntity<>(cliente.get(), HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		String existeCadastro = null;
+		
+		existeCadastro = ClienteRepository.buscarCPF(ClienteRepository.getCpf());
+
+		if (existeCadastro != null) {
+			return new ResponseEntity<>("CPF já cadastrado!", HttpStatus.PRECONDITION_REQUIRED); 
+		} else {
+			cliente.setNome(cliente.getNome());
+			cliente.setCpf(cliente.getCpf());
+			cliente.setCidade(cliente.getCidade());
+			cliente.setUf(cliente.getUf());
+
+			try {
+				if (Utils.isCPF(cliente.getCpf())) {
+					Cliente _cliente = clienteService.save(cliente);
+					return new ResponseEntity<>(_cliente, HttpStatus.CREATED);
+				} else {
+					return new ResponseEntity<>("CPF não é válido!", HttpStatus.PRECONDITION_REQUIRED);
+				}
+			} catch (Exception e) {
+				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		}
 	}
 	
-	@PostMapping("/novo")
-	public ResponseEntity<Cliente> cadastrar(@RequestBody Cliente request){
-		return ResponseEntity.ok(clienteService.save(request));
+	@PutMapping("/clientes/atualizar/{id}")
+	public Cliente atualizar(@RequestBody Cliente cliente) {
+		return clienteService.save(cliente);
 	}
 	
-	@PutMapping(path = "/{id}")
-	public ResponseEntity<Response<Cliente>> atualizar(@PathVariable(name = "id") String id,@Valid @RequestBody Cliente cliente, BindingResult result) {
-		if (result.hasErrors()) {
-			List<String> erros = new ArrayList<String>();
-			result.getAllErrors().forEach(erro -> erros.add(erro.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(new Response<Cliente>(erros));
-		}		
-		cliente.setId(id);
-		return ResponseEntity.ok(new Response<Cliente>(this.clienteService.save(cliente)));
-	}
-	
-	@DeleteMapping(path = "/{id}")
-	public ResponseEntity<Response<Integer>> remover(@PathVariable(name = "id") String id) {	
-		this.clienteService.deleteById(id);
-		return ResponseEntity.ok(new Response<Integer>(1));
-	}
+	@DeleteMapping("/deletar/{id}")
+	public void remover(@RequestBody Cliente cliente) {
+		clienteService.delete(cliente);
+		}
 }
