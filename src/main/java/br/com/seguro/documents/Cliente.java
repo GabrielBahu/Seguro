@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document(collection = "new-client")
+@Document
 public class Cliente {
 
 	@Id
@@ -15,6 +15,7 @@ public class Cliente {
     private String nome;
     private String cidade;
     private String uf;
+    
     public String getCidade() {
 		return cidade;
 	}

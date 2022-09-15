@@ -13,36 +13,36 @@ import br.com.seguro.service.ClienteService;
 public class ClienteServiceImpl implements ClienteService {
 	
 	@Autowired
-	private ClienteRepository clienterepository;
+	private ClienteRepository clienteRepository;
 	
 	
 	@Override
 	public List<Cliente> listarClientes() {
 		System.out.println("Listando todos os clientes");
-		return this.clienterepository.findAll();
+		return this.clienteRepository.findAll();
 	}
 
 	@Override
 	public Cliente listarPorId(String id) {
 		System.out.println("Pesquisando por ID");
-		return this.clienterepository.findById(id).orElse(null);
+		return this.clienteRepository.findById(id).orElse(null);
 		}
 
 	@Override
 	public Cliente cadastrar(Cliente cliente) {
 		System.out.println("Cadastrando cliente");
-		return this.clienterepository.save(cliente);
+		return this.clienteRepository.save(cliente);
 	}
 
 	@Override
 	public Cliente atualizar(Cliente cliente) {
 		System.out.println("Atualizando cadastro do cliente");
-		return this.clienterepository.save(cliente);
+		return this.clienteRepository.save(cliente);
 	}
 
 	@Override
 	public void remover(String id) {
 		System.out.println("Removendo cadastro");
-		this.clienterepository.deleteById(id);
+		this.clienteRepository.deleteById(id);
 	}
 	}

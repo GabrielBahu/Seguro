@@ -1,6 +1,5 @@
 package br.com.seguro.repository;
 
-import org.hibernate.validator.internal.util.privilegedactions.GetMethod;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -15,12 +14,13 @@ public interface ClienteRepository extends MongoRepository<Cliente, String> {
 		return cpf;
 	}
 
-	static String getCpf() {
+	public  static String getCpf() {
 		
 		Cliente cliente = new Cliente();
+		
 		cliente.getCpf();
 		
-		return ;
+		return cliente.getCpf();
 		
 	}
 

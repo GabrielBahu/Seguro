@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,16 +24,16 @@ import br.com.seguro.utils.Utils;
 @RequestMapping(value="/seguro")
 public class ClienteController {
 
-	ClienteRepository clienteService;
+	private ClienteRepository clienteRepository;
 	
 	@GetMapping ("/clientes")
 	public ResponseEntity<List<Cliente>> listarClientes(){
-		return new ResponseEntity<>(clienteService.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(clienteRepository.findAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/clientes/{id}")
 	public Cliente listarPorId(@PathVariable(value="id") String id){
-		return clienteService.findById(id).orElse(null);
+		return clienteRepository.findById(id).orElse(null);
 	}
 	
 	@PostMapping("/cadastrar")
@@ -52,7 +53,7 @@ public class ClienteController {
 
 			try {
 				if (Utils.isCPF(cliente.getCpf())) {
-					Cliente _cliente = clienteService.save(cliente);
+					Cliente _cliente = clienteRepository.save(cliente);
 					return new ResponseEntity<>(_cliente, HttpStatus.CREATED);
 				} else {
 					return new ResponseEntity<>("CPF não é válido!", HttpStatus.PRECONDITION_REQUIRED);
@@ -65,11 +66,11 @@ public class ClienteController {
 	
 	@PutMapping("/clientes/atualizar/{id}")
 	public Cliente atualizar(@RequestBody Cliente cliente) {
-		return clienteService.save(cliente);
+		return clienteRepository.save(cliente);
 	}
 	
 	@DeleteMapping("/deletar/{id}")
 	public void remover(@RequestBody Cliente cliente) {
-		clienteService.delete(cliente);
+		clienteRepository.delete(cliente);
 		}
 }
