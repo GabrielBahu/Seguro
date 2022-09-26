@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +30,7 @@ public class ClienteController {
 		return new ResponseEntity<>(clienteRepository.findAll(), HttpStatus.OK);
 	}
 	
+		
 	@GetMapping("/clientes/{id}")
 	public Cliente listarPorId(@PathVariable(value="id") String id){
 		return clienteRepository.findById(id).orElse(null);
@@ -39,13 +39,13 @@ public class ClienteController {
 	@PostMapping("/cadastrar")
 	public ResponseEntity<?> cadastrar(@Valid @RequestBody Cliente cliente) {
 		
-		String existeCadastro = null;
-		
-		existeCadastro = ClienteRepository.buscarCPF(ClienteRepository.getCpf());
-
-		if (existeCadastro != null) {
-			return new ResponseEntity<>("CPF já cadastrado!", HttpStatus.PRECONDITION_REQUIRED); 
-		} else {
+//		String existeCadastro = null;
+//		
+//		existeCadastro = ClienteRepository.buscarCPF(ClienteRepository.getCpf());
+//
+//		if (existeCadastro != null) {
+//			return new ResponseEntity<>("CPF já cadastrado!", HttpStatus.PRECONDITION_REQUIRED); 
+//		} else {
 			cliente.setNome(cliente.getNome());
 			cliente.setCpf(cliente.getCpf());
 			cliente.setCidade(cliente.getCidade());
@@ -62,7 +62,7 @@ public class ClienteController {
 				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
-	}
+//	}
 	
 	@PutMapping("/clientes/atualizar/{id}")
 	public Cliente atualizar(@RequestBody Cliente cliente) {
