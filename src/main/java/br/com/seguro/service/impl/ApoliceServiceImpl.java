@@ -21,26 +21,27 @@ public class ApoliceServiceImpl implements ApoliceService {
 	}
 
 	@Override
-	public Apolice listarPorNumero(UUID numeroApolice) {
+	public Apolice listarPorId(String id) {
 		System.out.println("Listando por numero da Apolice");
-		return this.apoliceRepository.findOne(numeroApolice);
+		return this.apoliceRepository.findById(id).orElse(null);
 	}
 
 	@Override
 	public Apolice cadastrar(Apolice apolice) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("Cadastrando Apolice");
+		return this.apoliceRepository.save(apolice);
 	}
 
 	@Override
 	public Apolice atualizar(Apolice apolice) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("Atualizando dados Apolice");
+		return this.apoliceRepository.save(apolice);
 	}
 
 	@Override
-	public void remover(UUID numeroApolice) {
-		// TODO Auto-generated method stub
+	public void remover(String id) {
+		System.out.println("Removendo Apolice");
+		this.apoliceRepository.deleteById(id);
 		
 	}
 

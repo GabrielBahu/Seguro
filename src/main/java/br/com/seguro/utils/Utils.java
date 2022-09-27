@@ -1,6 +1,8 @@
 package br.com.seguro.utils;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Random;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -59,5 +61,22 @@ public class Utils {
             return(cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." +
             	cpf.substring(6, 9) + "-" + cpf.substring(9, 11));
         }
+        
+        public static String randomNovo(ArrayList<String> setVerificar) {
+    		
+    		Random rnd = new Random(); 
+    		
+    		int number = rnd.nextInt(100);
+    		
+    		for (int i = 0; i < setVerificar.size(); i++) {
+    		    
+    			while (number == Integer.valueOf(setVerificar.get(i)) || number == 0) {
+    		        number = rnd.nextInt(500);				
+    			}
+    			
+    		}
+    		System.out.println(number);
+    		return String.valueOf(number);
+    	}
 	}
 

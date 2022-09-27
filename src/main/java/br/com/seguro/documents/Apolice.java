@@ -1,24 +1,23 @@
 package br.com.seguro.documents;
 
-import java.util.UUID;
-
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("Apolice")
 public class Apolice {
 
-	private UUID numeroApolice;
+	private String id;
+	private String numeroApolice;
 	private String dataInicioVigencia;
 	private String dataFimVigencia;
 	private String placaVeiculo;
 	private String valorApolice;
 	
 	
-	public UUID getNumeroApolice() {
+	public String getNumeroApolice() {
 		return numeroApolice;
 	}
 	
-	public void setNumeroApolice(UUID numeroApolice) {
+	public void setNumeroApolice(String numeroApolice) {
 		this.numeroApolice = numeroApolice;
 	}
 	
@@ -52,5 +51,13 @@ public class Apolice {
 	
 	public void setValorApolice(String valorApolice) {
 		this.valorApolice = valorApolice;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }
